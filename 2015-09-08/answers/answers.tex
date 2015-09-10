@@ -77,21 +77,21 @@
             \text{AI} = \frac{\text{\# flops}}{\text{\# bytes transferred between memory and cache}}
         \end{align*}
 
-        In the innermost loop, we have to perform 3 floating point operations on every iteration, which results in $3N$ flops for the inner loop. The total memory needed to perform the dot product between row $i$ of $A$ and column $j$ of $B$ is $2N\times 8\text{ bytes} = 16N\text{ bytes}$. Because this significantly larger than the size of our L3 cache, we can safely assume that under LRU, we need fetch all $16N$ bytes of data, everytime the innermost loop is executed. Therefore our memory-based AI is:
+        In the innermost loop, we have to perform 2 floating point operations on every iteration, which results in $2N$ flops for the inner loop. The total memory needed to perform the dot product between row $i$ of $A$ and column $j$ of $B$ is $2N\times 8\text{ bytes} = 16N\text{ bytes}$. Because this significantly larger than the size of our L3 cache, we can safely assume that under LRU, we need fetch all $16N$ bytes of data, everytime the innermost loop is executed. Therefore our memory-based AI is:
         \begin{align*}
-            \text{AI} = \frac{3}{16}
+            \text{AI} = \frac{1}{8}
         \end{align*}
 
     \section*{Question 2}
-        As shown in the previous question, we need $16N$ bytes of data to perform the innermost loop. Therefore, we look at the next most inner loop. Top perform the first inner loop (for (j = 0; ... )), we need $8N^2 + 8N$ bytes of memory. We need every entry from $B$ which equals $8N^2$ bytes. We also need $8N$ bytes to keep row $i$ of $A$ around. To perform the first inner loop, we do $3N^2$ flops. The arithmetic intensity is now approximately:
+        As shown in the previous question, we need $16N$ bytes of data to perform the innermost loop. Therefore, we look at the next most inner loop. Top perform the first inner loop (for (j = 0; ... )), we need $8N^2 + 8N$ bytes of memory. We need every entry from $B$ which equals $8N^2$ bytes. We also need $8N$ bytes to keep row $i$ of $A$ around. To perform the first inner loop, we do $2N^2$ flops. The arithmetic intensity is now approximately:
         \begin{align*}
-            \text{AI} = \frac{3}{8}
+            \text{AI} = \frac{1}{4}
         \end{align*}
 
     \section*{Question 3}
-        We need to keep all of $A$, $B$, and $C$ in cache, which equals $24N^2$ bytes. We then need to write to all of $C$ back to main memory, which results in another $8N^2$ memory operations. This gives a total of $32N^2$ bytes transferred between memory and cache. We then have a total of $3N^3$ flops. Therefore, our arithmetic intensity is:
+        We need to keep all of $A$, $B$, and $C$ in cache, which equals $24N^2$ bytes. We then need to write to all of $C$ back to main memory, which results in another $8N^2$ memory operations. This gives a total of $32N^2$ bytes transferred between memory and cache. We then have a total of $2N^3$ flops. Therefore, our arithmetic intensity is:
         \begin{align*}
-            \text{AI} = \frac{3N}{32}
+            \text{AI} = \frac{N}{16}
         \end{align*}
 
     \section*{Question 4}
@@ -103,7 +103,7 @@
 
         $N$ must be a positive integer, so we choose $N$ to be 36. Because all of $A$, $B$ and $C$ can fit into the L3 cache, we can just use the formula obtained in Question 3 to obtain the AI. 
         \begin{align*}
-            \text{AI}_{L1} = \frac{3(36)}{32} = 3.375
+            \text{AI}_{L1} = \frac{1(36)}{16} = 2.25
         \end{align*}
 
         The L2 cache has $2^{18}$ bytes. Solving again for $N$:
@@ -114,7 +114,7 @@
 
         We therefore choose $N$ to be 104. The AI is then given by:
         \begin{align*}
-            \text{AI}_{L2} = \frac{3(104)}{32} = 9.75
+            \text{AI}_{L2} = \frac{1(104)}{16} = 6.5
         \end{align*}
 
         The L3 cache has on the order of 6 million bytes:
@@ -125,7 +125,7 @@
 
         We therefore choose $N$ to be 500. The AI is therefore:
         \begin{align*}
-            \text{AI}_{L3} = \frac{3(500)}{32} = 46.875
+            \text{AI}_{L3} = \frac{1(500)}{16} = 31.25
         \end{align*}
 
     \section*{Question 5}
@@ -142,18 +142,18 @@
     \section*{Question 6}
         We can solve for $N$:
         \begin{align*}
-            6 &= \frac{3N}{32}\\[0.5em]
-            64 &= N
+            6 &= \frac{N}{16}\\[0.5em]
+            96 &= N
         \end{align*}
 
-        When $64 \leq N \leq 500$, the naive matmul is CPU-bound.
+        When $96 \leq N \leq 500$, the naive matmul is CPU-bound.
 
     \section*{Question 7}
-        When $64 \leq N \leq 500$, the naive matmul is CPU-bound. Otherwise, the operation is memory bound. So when $N < 64$, the plot of Flops/s will be linearly increasing. The slope of this linear increase is:
+        When $96 \leq N \leq 500$, the naive matmul is CPU-bound. Otherwise, the operation is memory bound. So when $N < 96$, the plot of Flops/s will be linearly increasing. The slope of this linear increase is:
         \begin{align*}
-            slope = \frac{3(25.6\times 10^9)}{32} = 2.4 \times 10^9
+            slope = \frac{(25.6\times 10^9)}{16} = 1.6 \times 10^9
         \end{align*}
 
-        This will be linearly increasing until we hit 153.6 Flops / s at $N = 64$. This line will then be straight until $N = 500$. The naive matmul will become memory-bound at this point. The Flop/s will decrease slowly at first, faster when the cache is smaller than $8N^2$, and faster still when the cache is smaller than $16N$.
+        This will be linearly increasing until we hit 153.6 Flops / s at $N = 96$. This line will then be straight until $N = 500$. The naive matmul will become memory-bound at this point. The Flop/s will decrease slowly at first, faster when the cache is smaller than $8N^2$, and faster still when the cache is smaller than $16N$.
 
 \end{document}
