@@ -1,0 +1,95 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+
+% Packages we need
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{amsthm}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
+
+% Header packages
+\usepackage{fancyhdr}
+\fancyhf{}
+\pagestyle{fancy}
+
+% Algorithms
+\usepackage{algorithmic}
+\usepackage{algorithm}
+
+% Formatting document
+\setcounter{secnumdepth}{0}
+\setlength{\parindent}{0in}
+\setlength{\parskip}{0.5em}
+
+% MATLAB code
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+\lstset{language=Matlab,%
+    %basicstyle=\color{red},
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    stringstyle=\color{mylilas},
+    commentstyle=\color{mygreen},%
+    showstringspaces=false,%without this there will be a symbol in the places where there is a space
+    numbers=left,%
+    numberstyle={\tiny \color{black}},% size of the numbers
+    numbersep=9pt, % this defines how far the numbers are from the text
+    emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
+}
+
+% Commands
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\newcommand{\ws}{\text{ }}
+\newcommand{\e}[1]{\times 10^{#1}}
+
+% Header
+\lhead{\textsc{CS 5220 -- Sep. 15 Preclass Questions}} % TODO: enter title here
+\rhead{\textsc{Eric Gao -- emg222}} % Authors
+\setlength{\headheight}{0.5in}
+\cfoot{\thepage}
+
+% Title
+\title{CS 5220 -- Sep. 15 Preclass Questions} %TODO: enter title here
+\author{
+  \begin{tabular}{l c l}
+    Eric Gao & -- & emg222\\
+  \end{tabular}\\
+  \rule{\linewidth}{0.4pt}
+}
+\date{}
+
+
+\begin{document}
+    \thispagestyle{empty}
+    \maketitle
+
+    \section*{Question 0}
+        I started this at 12:30 AM and finished at 1:30AM. It took me 1 hour.
+
+    \section*{Question 1}
+        I'm not too familiar with ODEs and PDEs, so those sections did not make much sense to me, especially in relation to particle systems. I was also not sure what was going on with the particle on the mesh and how that helps us with the far-field forces.
+
+    \section*{Question 2}
+        A totient node has 15MB in the L3 cache. \\
+        http://www.newegg.com/Product/Product.aspx?Item=N82E16819117480.
+
+        Each cell is represented with 1 byte. We keep two copies of the board around. Therefore, we can have two 7.5MB boards. So we can fit 7.5MB cells in each board. So we take the square root of 7.5 and we get a 2738 by 2738 grid of cells if each cell requires 1 byte.
+
+    \section*{Question 3}
+        We can use a oct-tree or a k-d tree so that we don't have consider all of the cells of the cell, then we can parallelize over the blocks of the tree that contain active nodes.
+
+    \section*{Question 4}
+        To parallelize the game of life, we first need to find the set of nodes and their neighborhood of possible next positions. We can then parallelize over these sets of nodes.
+
+    \section*{Question 5}
+        If two particle influences one another, then it might be difficult to share memory between processors to apply the forces between particles. We then loop over all possible combinations of particles. Also, if forces are symmetrical, then we could improve by applying the two forces between two particles simultaneously.
+
+\end{document}
