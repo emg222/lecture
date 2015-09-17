@@ -5,9 +5,15 @@ than on the numerical analysis, but I am working under the assumption
 that you can figure out the numerical jargon.
 
 0.  How much time did you spend on this pre-class exercise, and when?
+    I started this pre-class exercise at 2:21AM. I finished at 3:16AM.
+    So it took me about an hour.
 
 1.  What are one or two points that you found least clear in the
     9/17 slide decks (including the narration)?
+
+    A little more introduction to PDEs and ODEs would have been nice.
+
+
 
 2.  Fill in the most straightforward implementation you can think of
     for multiplying a compressed sparse row matrix by a vector.
@@ -25,6 +31,17 @@ that you can figure out the numerical jargon.
       void sparse_multiply(csr_t* A, double* x, double* result)
       {
           /* Fill in here */
+          int i, j;
+          for( i = 0; i < sizeof(A->ptr) - 1; ++i )
+          {
+              int offset = A->ptr[ i ];
+              int num_elems = A->ptr[ i + 1 ] - offset;
+              double x_i = x[ i ];
+              for( j = 0; j < num_elems; ++j )
+              {
+                  result[ i ] += A->pr[ j + offset ] * x_i;
+              }
+          }
       } 
 
 3.  From the slides, complete the following short code:
@@ -33,6 +50,10 @@ that you can figure out the numerical jargon.
                          double h, double x, double y)
       {
           /* Estimate the Laplacian applied to u at (x,y) */
+          double hh_inv = 1 / ( h * h );
+          double numerator = ( 4 * u( x, y ) - u( x - 1, y ) - 
+                               u( x + 1, y ) - u( x, y - 1 ) - u( x, y + 1 ) );
+          return numerator * hh_inv;
       }
 
     If you are unfamiliar with the syntax, the first argument to
@@ -61,3 +82,14 @@ that you can figure out the numerical jargon.
     several steps without communicating, can you describe how to
     similarly advance this scheme?  Are there any advantages to such
     an organization if there is only one core available?
+
+    My understanding of the slides is that we divide the grid up according
+    to the number of cores and then we can locally time step in the 
+    division that is relevant to the processor, perform several of 
+    these steps and then communicate the boundary conditions to 
+    the other processors. So in the 1D heat equation, we can 
+    divide the space up into several segments and use this scheme. 
+
+    If only one core is available, there is still benefit because of the
+    temporal locality that is a result of performing several time steps on a
+    single block.
