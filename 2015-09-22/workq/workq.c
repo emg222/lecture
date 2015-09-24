@@ -169,11 +169,15 @@ void* workq_get(workq_t* workq)
 {
     void* result = NULL;
     workq_lock( workq );
+    workq_wait( workq );
     if (workq->tasks) {
         task_t* task = workq->tasks;
         result = task->data;
         workq->tasks = task->next;
         free(task);
+    }
+    if( workq->done ) {
+        workq_broadcast( workq );
     }
     workq_unlock( workq );
     return result;

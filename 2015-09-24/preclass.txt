@@ -1,7 +1,13 @@
 0.  How much time did you spend on this pre-class exercise, and when?
+    I started at 1am. I finished at 2:30am.
 
 1.  What are one or two points that you found least clear in the
     9/24 slide decks (including the narration)?
+
+    I found the explanation on false sharing a little confusing.
+    It would have been good (for me at least) to see a picture of
+    what is happening in the cache line that results in false
+    sharing.
 
 2.  The omp_mc.c file in the demo subdirectory runs a Monte Carlo
     simulation to estimate the expected value of a uniform random
@@ -13,16 +19,47 @@
        time per trial (t_trial), and time to update the global
        counters in the critical section (t_update).
 
+       N / nbatch * t_update + N / p * t_trial
+
     b) Run the code with a few different parameter values in order
        to estimate N, t_trial, and t_update for this code on
        a totient compute node.
+
+       We set rtol to be a small enough value so we essentially run
+       the max number of iterations before converging.
+       We use the following parameters:
+
+       N = 10001000; p = 1; b = 1000:  1.899555e-01 s
+       N = 10005000; p = 1; b = 5000:  1.132241e-01 s
+       N = 10010000; p = 1; b = 10000: 1.233087e-01 s
+       N = 10004000; p = 4; b = 1000:  9.278356e-02 s
+       N = 10020000; p = 4; b = 5000:  7.983863e-02 s
+       N = 10040000; p = 4; b = 10000: 4.416665e-02 s
+
+       We can then try to solve for t_update and t_trial using Octave.
+
+       I got t_update = 7.3192e-06 s, t_trial = 1.1341e-08 s.
+       We see that N is dependent on p and nbatch:
+       N = 10000000 + nbatch * p;
 
     c) Based on your model, suggest a strategy for choosing the batch
        size.  How might you generalize this strategy to automatically
        choose batch sizes for different types of computational
        experiments?
 
+       I would recommend the same strategy I stated in the previous
+       preclass questions from 09/22. 
+
 3.  The "OpenMP pitfalls" paper describes some common pitfalls (both
     performance and correctness) in OpenMP codes.  Go through the
     checklist in the paper for omp_mc.c.  What performance mistakes
     are there in the demonstration implementation?
+
+    Variables in the thread_main class were not marked as private
+    when the #pragma omp parallel began. 
+
+    #pragma omp critical when generating the seed is unnecessary 
+    because seed is a private variable.
+
+    You can update the shared variable by making it a reduction 
+    variable.
